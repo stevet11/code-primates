@@ -189,7 +189,7 @@ func show_title() -> void:
 		{"text": "Load Game", "cb": show_slots.bind(false), "disabled": Saves.newest() < 0},   # greyed out: no saves yet
 		{"text": "Help", "cb": show_help},
 		{"text": "Options", "cb": show_options},
-		{"text": "Quit", "cb": func(): get_tree().quit()},
+		{"text": "Quit", "cb": func(): Audio.quit_game()},
 	], 26, 30, 1)
 
 

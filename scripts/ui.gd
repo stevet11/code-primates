@@ -310,7 +310,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if not (_ended and event is InputEventKey and event.pressed):
 		return
 	if event.keycode == KEY_ESCAPE:
-		get_tree().quit()
+		Audio.quit_game()
 	elif event.keycode in [KEY_ENTER, KEY_KP_ENTER]:
 		_ended = false
 		_end_layer.visible = false

@@ -25,6 +25,7 @@ var menu
 
 
 func _ready() -> void:
+	get_tree().set_auto_accept_quit(false)  # closing the window goes through Audio.quit_game(), see _notification
 	add_child(preload("res://scripts/ui.gd").new())
 	add_child(preload("res://scripts/dialogue_ui.gd").new())
 	menu = preload("res://scripts/menu_ui.gd").new()
@@ -32,6 +33,11 @@ func _ready() -> void:
 	Game.room_change_requested.connect(_change_room, CONNECT_DEFERRED)
 	Game.title_requested.connect(quit_to_title)
 	menu.show_title()  # also starts the title music
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		Audio.quit_game()
 
 
 func start_new_game() -> void:

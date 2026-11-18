@@ -62,6 +62,18 @@ func _ready() -> void:
 	_apply_mutes()
 
 
+## Quit the game cleanly. If the game closes while a sound is still playing, Godot prints "ObjectDB instances were
+## leaked" and "resources still in use" (harmless, but noisy): the mixer is still holding the playing sound. So stop
+## everything, let go of the sounds, give the mixer a moment to let go, and then quit.
+func quit_game() -> void:
+	for p in _pool + _music + _amb:
+		p.stop()
+		p.stream = null
+	_streams.clear()
+	await get_tree().create_timer(0.25).timeout
+	get_tree().quit()
+
+
 func _make_bus(bus_name: String, db: float) -> void:
 	AudioServer.add_bus()
 	var i := AudioServer.bus_count - 1

@@ -58,4 +58,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" build/*.zip --title "Code Primates $GITHUB_REF_NAME" --generate-notes
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            # The tag was moved (re-tagged) and its release already exists: replace the files, keep the page.
+            gh release upload "$GITHUB_REF_NAME" build/*.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" build/*.zip --title "Code Primates $GITHUB_REF_NAME" --generate-notes
+          fi
