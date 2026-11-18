@@ -27,15 +27,18 @@ def parse_note(s):
     return 12 * (int(s[i:]) + 1) + pc
 
 
+CHORD_TYPES = {"": [0, 4, 7], "m": [0, 3, 7], "7": [0, 4, 7, 10], "maj7": [0, 4, 7, 11], "m7": [0, 3, 7, 10],
+               "9": [0, 4, 7, 10, 14], "maj9": [0, 4, 7, 11, 14], "m9": [0, 3, 7, 10, 14], "6": [0, 4, 7, 9]}
+
+
 def chord_pcs(name):
-    """'Cm' -> (root pitch class, [intervals]); 'Ab' -> major triad."""
+    """'Cm' -> (root pitch class, [intervals]); 'Ab' -> major triad; also 'C7', 'Cmaj7' and 'Cm7'."""
     root = PC[name[0]]
     i = 1
     if len(name) > i and name[i] in "#b":
         root += 1 if name[i] == "#" else -1
         i += 1
-    minor = name[i:] == "m"
-    return root % 12, [0, 3, 7] if minor else [0, 4, 7]
+    return root % 12, CHORD_TYPES[name[i:]]
 
 
 def wave_at(kind, ph, duty):
@@ -217,11 +220,16 @@ BASS = {
     "walk": [(0, 0, 2), (2, 12, 2), (4, 0, 2), (6, 7, 2), (8, 0, 2), (10, 12, 2), (12, 0, 2), (14, 7, 2)],
     "easy": [(0, 0, 3), (4, 7, 3), (8, 12, 3), (12, 7, 3)],
     "drive": [(0, 0, 2), (2, 0, 2), (4, 0, 2), (6, 12, 2), (8, 0, 2), (10, 0, 2), (12, 0, 2), (14, 12, 2)],
+    # a bouncy walking line: root, fifth, a skip up to the octave, and back (short notes, so it swings)
+    "bounce": [(0, 0, 3), (4, 7, 2), (6, 12, 2), (8, 0, 3), (12, 7, 2), (14, 12, 2)],
 }
 DRUMS = {
     "rock": dict(kick=[0, 8], snare=[4, 12], hat=range(0, 16, 2)),
     "soft": dict(kick=[0, 10], snare=[4, 12], hat=range(2, 16, 4), snare_vol=0.35, hat_vol=0.5, kick_vol=0.7),
     "four": dict(kick=[0, 4, 8, 12], snare=[4, 12], hat=range(16), hat_vol=0.9),
+    # a jazz ride: beats 1, 2, 3, 4 and the swung "ands" of 2 and 4; very soft brushed backbeat
+    "jazz": dict(kick=[0, 8], snare=[4, 12], hat=[0, 4, 6, 8, 12, 14], snare_vol=0.16, hat_vol=0.75, kick_vol=0.30),
+    "lounge": dict(kick=[0, 8], snare=[4, 12], hat=range(2, 16, 4), snare_vol=0.18, hat_vol=0.45, kick_vol=0.3),
 }
 
 
@@ -234,6 +242,11 @@ def render_track(spec):
     tail = int(1.0 * SR)
     buf = [0.0] * (total_steps * spb + tail)
     drums = DRUMS[spec["drums"]]
+    swing = spec.get("swing", 0.0)  # in 16th steps: 0.667 = triplet swing (the offbeat eighths come late)
+
+    def at(step):  # sample position of a step, with swing on the off-beat eighths (steps 2, 6, 10, 14 of a bar)
+        return step * spb + (int(swing * spb) if step % 4 == 2 else 0)
+
     bass_pat = BASS[spec["bass"]]
     for p, ps in enumerate(passes):
         for b, chord in enumerate(bars):
@@ -242,7 +255,7 @@ def render_track(spec):
             # lead
             if ps.get("lead", True):
                 for st, m, ln in bar_events(spec["melody"][b], s0):
-                    mix_into(buf, st * spb, tone("square", midi_freq(m + ps.get("lead_shift", 0)),
+                    mix_into(buf, at(st), tone(spec.get("lead_wave", "square"), midi_freq(m + ps.get("lead_shift", 0)),
                                                  ln * step * 0.92, spec.get("lead_vol", 0.30),
                                                  duty=ps.get("duty", spec.get("duty", 0.5)), dec=0.35, sus=0.55, vib=1.0))
             # bass (triangle)
@@ -253,8 +266,13 @@ def render_track(spec):
                 tones = [48 + root + iv for iv in ivs] + [60 + root]
                 for st in range(16):
                     m = tones[st % 4] + 12
-                    mix_into(buf, (s0 + st) * spb, tone("square", midi_freq(m), step * 0.8, spec.get("arp_vol", 0.085),
-                                                        duty=0.125, dec=0.06, sus=0.3))
+                    mix_into(buf, (s0 + st) * spb, tone(spec.get("arp_wave", "square"), midi_freq(m), step * 0.8,
+                                                        spec.get("arp_vol", 0.085), duty=0.125, dec=0.06, sus=0.3))
+            # chord stabs ("comping"): all the chord's notes at once, soft, on the given steps of the bar
+            for cs in spec.get("comp", []):
+                for iv in ivs:
+                    mix_into(buf, at(s0 + cs), tone("tri", midi_freq(60 + root + iv - (12 if root > 6 else 0)),
+                                                    step * 5, spec.get("comp_vol", 0.06), dec=0.25, sus=0.15))
             # drums
             for st in drums["kick"]:
                 mix_into(buf, (s0 + st) * spb, kick(0.55 * drums.get("kick_vol", 1.0)))
@@ -262,7 +280,7 @@ def render_track(spec):
                 mix_into(buf, (s0 + st) * spb, snare(0.35 * drums.get("snare_vol", 1.0)))
             for st in drums["hat"]:
                 accent = 1.0 if st % 4 == 0 else 0.6
-                mix_into(buf, (s0 + st) * spb, hat(0.10 * accent * drums.get("hat_vol", 1.0)))
+                mix_into(buf, at(s0 + st), hat(0.10 * accent * drums.get("hat_vol", 1.0)))
     # fold the tail back onto the start so the loop is seamless
     body = total_steps * spb
     for i in range(tail):
@@ -305,6 +323,22 @@ TRACKS = {
                 "B5:1 -:1 B5:1 -:1 E6:4 -:4 D6:2 -:2",
                 "C6:2 -:2 A5:2 -:2 E5:2 -:2 A5:2 -:2",
                 "D#6:2 -:2 B5:2 -:2 F#5:2 -:2 D#5:2 -:2"]),
+    # The elevator: swinging lounge jazz ("elevator music"), generated so there is nothing third-party in the repo. Smooth 7th
+    # chords, a mellow triangle-wave lead with long notes, a gentle walking bass and brushed drums. 16 bars.
+    "elevator": dict(
+        bpm=84, bass="bounce", drums="jazz", swing=0.667, lead_wave="tri", duty=0.5, lead_vol=0.38, arp=False,
+        comp=[0, 6, 10], comp_vol=0.08,
+        # ii-V-I with a secondary dominant (A7) and a turnaround, in C: the classic lounge/jazz loop.
+        chords=["Dm9", "G9", "Cmaj9", "A7", "Dm9", "G9", "Em7", "A7",
+                "Dm7", "G7", "Cmaj7", "Am7", "Dm7", "G9", "Cmaj9", "Cmaj9"],
+        melody=["F5:2 A5:2 D6:4 C6:2 A5:2 F5:4", "G5:2 B5:2 D6:4 B5:2 A5:2 G5:2 F5:2",
+                "E5:4 G5:2 B5:2 C6:4 B5:2 G5:2", "C#6:2 E6:2 D6:2 C#6:2 A5:4 E5:4",
+                "D6:4 C6:2 A5:2 F5:2 A5:2 D6:4", "B5:2 D6:2 F6:4 E6:2 D6:2 B5:4",
+                "G5:2 B5:2 E6:4 D6:2 B5:2 G5:4", "A5:2 C#6:2 E6:4 C#6:2 A5:2 G5:4",
+                "F5:2 A5:2 C6:4 D6:4 C6:2 A5:2", "B5:4 D6:2 F6:2 D6:2 B5:2 G5:2 F5:2",
+                "E5:2 G5:2 C6:4 E6:4 D6:2 C6:2", "C6:2 B5:2 A5:4 E5:2 G5:2 A5:4",
+                "D5:2 F5:2 A5:4 D6:4 C6:2 A5:2", "B5:2 A5:2 G5:2 F5:2 D5:2 F5:2 G5:2 B5:2",
+                "E6:4 D6:2 B5:2 G5:4 E5:4", "C6:2 E6:2 G6:4 E6:4 C6:4"]),
     # A minor, slow and a little spooky: the basement, the IT lab and the closet.
     "basement": dict(
         bpm=80, bass="easy", drums="soft", duty=0.125, lead_vol=0.20, arp=False,

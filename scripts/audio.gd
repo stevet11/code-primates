@@ -101,14 +101,9 @@ func play_music(track: String) -> void:
 	if track == _track:
 		return
 	_track = track
-	var path := MUSIC_DIR + track + ".wav"
-	if not ResourceLoader.exists(path):
-		path = MUSIC_DIR + track + ".mp3"
-	var s := _get_stream(path)
+	var s := _get_stream(MUSIC_DIR + track + ".wav")
 	if s == null:
 		return
-	if s is AudioStreamMP3:
-		(s as AudioStreamMP3).loop = true
 	if s is AudioStreamWAV:
 		# Loop the whole file. Length is measured in samples; don't count bytes, because Godot
 		# may store imported WAVs compressed.

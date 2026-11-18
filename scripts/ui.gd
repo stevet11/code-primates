@@ -60,10 +60,12 @@ Meetings Attended: All of Them
 
 MUSIC
 
-"Elevator - Elevator Music"
-by andriih (Pixabay)
+Every note, beep and boop
+by tools/make_audio.py
 
-Everything else: beeps and boops by tools/make_audio.py
+Including the elevator music:
+a swinging jazz loop by a Python script
+that has never been in an elevator
 
 FONT
 

@@ -13,6 +13,8 @@ Spoilers: `tools/playthrough.gd` plays the entire game, so it contains the full 
 - `godot --headless --path . -s tools/check_rooms.gd`: sprite sizes, missing art, walk points, exits and spawns, doors covered by
   other objects, and things drawn behind what they sit on.
 - `godot --path . -s tools/screenshots.gd`: regenerates `docs/screenshots/` (needs a display; opens a window for a few seconds).
+- `.github/workflows/release.yml`: on a `v*` tag, GitHub Actions installs Godot and the templates (checked against the official SHA-512 sums),
+  runs the room check and the playthrough, builds both zips and publishes the release. "Run workflow" on the Actions tab does a test build without a release.
 - `./build.sh` builds `build/` zips for Linux and Windows (needs the matching Godot export templates). The preset keeps the
   dialogue `.txt` files (`include_filter`), which Godot would otherwise leave out of an export.
 

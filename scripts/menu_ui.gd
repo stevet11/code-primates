@@ -23,9 +23,8 @@ const CREDITS := """[Game]
 Made with Godot Engine 4 (MIT license)
 
 [Music]
-"Elevator - Elevator Music" by andriih
-from Pixabay, under the Pixabay Content License
-Title, office, hallway and server room music and all\nsound effects: synthesized by tools/make_audio.py
+All music, the elevator jazz included, and all sound effects:
+synthesized by tools/make_audio.py
 
 [Font]
 VT323, The VT323 Project Authors (Peter Hull), SIL Open Font License"""
