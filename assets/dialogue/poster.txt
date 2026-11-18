@@ -1,0 +1,4 @@
+== start
+Monkey: Hey. Poster. Do you deploy on Fridays?
+Poster: Ook.
+Monkey: That's what I thought.

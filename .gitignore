@@ -1,0 +1,21 @@
+# Personal design notes (kept out of the repo for now)
+MAP.md
+
+# Third-party music we may not redistribute on its own (Pixabay license); it is included in the release builds
+assets/audio/music/elevator.mp3
+assets/audio/music/elevator.mp3.import
+
+# Godot
+.godot/
+*.translation
+
+# Builds (attach the zips to a GitHub release instead of committing them)
+build/
+/Code Primates.*
+*.x86_64
+*.exe
+*.pck
+
+# Python
+__pycache__/
+*.pyc

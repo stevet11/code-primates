@@ -1,0 +1,18 @@
+# The boss's trophy shelf (hotspot "trophies" in scripts/rooms/boss.gd).
+
+== start
+-> again [if met_trophies]
+! set met_trophies
+Trophy: We are the Boss's greatest achievements.
+Monkey: Golf, golf, and golf.
+Trophy: Golf. Yes. Many. Golf.
+Ribbon: ...Participation.
+Monkey: Pardon?
+Ribbon: I'm for participation. ...In "Leadership".
+Trophy: We don't talk about the ribbon.
+-> end
+
+== again
+Trophy: Please stop looking at us. We are very busy being shiny.
+Ribbon: ...Participation.
+-> end

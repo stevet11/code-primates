@@ -1,0 +1,18 @@
+# The break room microwave (hotspot "microwave" in scripts/rooms/breakroom.gd).
+
+== start
+-> again [if met_microwave]
+! set met_microwave
+Microwave: BEEP. BEEP. BEEP. Your food is ready.
+Monkey: I didn't put any food in.
+Microwave: ...Your food is STILL ready.
+Monkey: It smells like fish.
+Microwave: Nobody has opened me since the Tuesday of the fish incident.
+Microwave: Please remove your food. (BEEP.)
+-> end
+
+== again
+Microwave: BEEP. Your food is ready. It has been ready for some time.
+Monkey: I know.
+Microwave: (BEEP.)
+-> end

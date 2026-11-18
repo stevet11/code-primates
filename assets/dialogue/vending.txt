@@ -1,0 +1,37 @@
+# Vending machine (break room). Reached by Talk on the machine (hotspot extra {"talk": "vending"}).
+
+== start
+-> first [if !met_vending]
+Vending Machine: Back again? Insert coin or go away.
+-> menu
+
+== first
+! set met_vending
+Vending Machine: BZZT. Greetings, primate. I am the Vend-O-Tron 9000.
+Monkey: You can talk?
+Vending Machine: I can do everything except dispense. The snacks were "reallocated".
+-> menu
+
+== menu
+* What do you sell? -> sell
+* Know any way into the server room? -> hint [if !knows_hint]
+* I found a keycard! -> keycard [if has:keycard] [once]
+* Nothing. Bye. -> end
+
+== sell
+Vending Machine: Officially: chips, cola and bananas. Currently: one banana. Forty dollars.
+Monkey: Forty dollars for one banana?
+Vending Machine: It is a premium banana. It has seen things.
+-> menu
+
+== hint
+! set knows_hint
+Vending Machine: I hear things through the wall. The server room is in the basement, behind the IT lab.
+Vending Machine: The IT lab wants a keycard. Somebody locked one in the desk drawer in the office. Drawers hate paperclips, I'm told.
+Monkey: That's weirdly specific.
+Vending Machine: I contain multitudes. And one banana.
+-> menu
+
+== keycard
+Vending Machine: Wonderful. Please don't ask me to unlock anything. I only dispense disappointment.
+-> menu

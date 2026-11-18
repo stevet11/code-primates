@@ -1,0 +1,4 @@
+#!/bin/bash
+
+godot --path .
+

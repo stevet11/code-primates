@@ -1,0 +1,43 @@
+# Dale, the night-shift sysadmin (a sloth). Everything takes him a while.
+# Dale hints that the deploy terminal needs the CEO\'s USB stick. (The ending is the USB stick, not Dale.)
+
+== start
+-> intro [if !met_dale]
+Dale: ...hhh... you again.
+-> menu
+
+== intro
+! set met_dale
+Dale: ...hhhhello.
+Monkey: You must be Dale. The sysadmin?
+Dale: ...yes. I have been... on shift... since Tuesday.
+Monkey: It's Friday.
+Dale: ...ah. ...That explains... the quiet.
+-> menu
+
+== menu
+* Can I use the deploy terminal? -> terminal [if !asked_terminal]
+* Why can't we deploy right now? -> friday [if asked_terminal] [if !asked_friday]
+* It's technically Saturday in Tokyo. -> tokyo [if asked_friday] [if !dale_ok]
+* I'll let you get back to... whatever this is. -> end
+
+== terminal
+! set asked_terminal
+Dale: ...the terminal. ...Yes. It only accepts... authorized media.
+Dale: ...a USB stick. ...from upstairs. ...the CEO's... backups.
+-> menu
+
+== friday
+! set asked_friday
+Dale: ...I would help... but it is... Friday.
+Dale: ...no deploys... on Fridays. ...Policy. ...Rules are... rules. ...Rules.
+-> menu
+
+== tokyo
+! set dale_ok
+Dale: ...Tokyo.
+Dale: ...hhhhhh... is that... where the servers... are?
+Monkey: Time zones, Dale. It's already tomorrow somewhere.
+Dale: ...technically... correct. ...The best kind... of correct.
+Dale: ...fine. ...bring me... the stick. ...I will... not stop you.
+-> menu

@@ -1,0 +1,6 @@
+# The memo on the conference room wall (hotspot "memo" in scripts/rooms/conference.gd). Click to read on.
+
+== start
+Memo: MEMO. To: All staff. Re: The upcoming meeting about memos.
+Memo: We need more memos for the meeting about memos.
+Memo: Please send memos about this memo by Friday. (Hard copy only.)

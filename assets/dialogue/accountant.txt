@@ -1,0 +1,27 @@
+# The accountant on the 3rd floor. Talk to them; they lose count and mutter the PIN (needs coffee first).
+# Hotspot "accountant" in scripts/rooms/accounting.gd.
+
+== start
+-> sleepy [if !accountant_awake]
+-> pin [if !knows_pin]
+-> again
+
+== sleepy
+Accountant: ...forty-one... forty-two... forty-three...
+Monkey: Excuse me?
+Accountant: Shh. ...forty-four... so tired... need... caffeine...
+Monkey: He's practically asleep. Maybe a cup of coffee would help.
+-> end
+
+== pin
+! set knows_pin
+! give pin_note
+Accountant: ...mmm, thank you for the coffee. Now where was I...
+Accountant: Wait. You made me lose count! I was at four thousand, seven hundred and nineteen!
+Monkey: 4,719. Got it.
+Accountant: Now I have to start over. One... two... three...
+-> end
+
+== again
+Accountant: Shh! One... two... three... You'll make me lose count again!
+-> end

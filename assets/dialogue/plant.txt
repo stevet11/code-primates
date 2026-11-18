@@ -1,0 +1,4 @@
+# The giant lobby plant. Only talkable while it is huge. Hotspot "plant" in scripts/rooms/lobby.gd.
+
+== start
+Giant Plant: I'm fine, thanks.

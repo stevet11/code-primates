@@ -1,0 +1,21 @@
+# The VP's desk phone (hotspot "phone" in scripts/rooms/vp.gd).
+
+== start
+Voicemail: Hi, you've reached the Vice President of Meetings About Meetings. I'm in a meeting.
+-> menu
+
+== menu
+* Press 1 to schedule a meeting about this call. -> one [once]
+* Press 2 to leave a message. -> two [once]
+* Hang up. -> end
+
+== one
+Voicemail: Great! Your call has been scheduled for a meeting. Please prepare a memo for the meeting.
+Voicemail: The memo should be about the meeting. Thank you.
+-> menu
+
+== two
+Voicemail: Please leave your message after the tone. Messages longer than a memo will be rescheduled.
+Monkey: Ook.
+Voicemail: I'm sorry, I didn't catch that. Please send a memo.
+-> menu

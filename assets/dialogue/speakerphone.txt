@@ -1,0 +1,20 @@
+# The conference room speakerphone (hotspot "phone" in scripts/rooms/conference.gd).
+
+== start
+-> again [if met_speakerphone]
+! set met_speakerphone
+Speakerphone: Hello? ...Is someone there? Hi, who just joined?
+Monkey: Ook.
+Speakerphone: Sorry, you're on mute.
+Monkey: OOK!
+Speakerphone: Still can't hear you. Have you tried turning it off and on again?
+Monkey: Ook. (He considers it. It's a fair point.)
+Speakerphone: Great, great. Let's take this offline and circle back. Thanks, everyone!
+Speakerphone: ...Is it just me, or is someone breathing?
+-> end
+
+== again
+Speakerphone: Hi, who just joined? ...Oh, you're still on mute.
+Monkey: Ook.
+Speakerphone: Love the energy. We'll circle back.
+-> end

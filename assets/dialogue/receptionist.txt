@@ -1,0 +1,4 @@
+# The receptionist only turns up when the lobby plant is huge. Hotspot "receptionist" in scripts/rooms/lobby.gd.
+
+== start
+Receptionist: What did you do to my plant?!

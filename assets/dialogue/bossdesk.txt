@@ -1,0 +1,8 @@
+# The nameplate on the boss's desk (hotspot "desk" in scripts/rooms/boss.gd).
+
+== start
+Nameplate: I am THE BOSS. Please address me as such.
+Monkey: You're a piece of brass.
+Nameplate: A piece of brass with a TITLE.
+Nameplate: ...Is there a memo about this?
+-> end
