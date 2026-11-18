@@ -345,15 +345,15 @@ def console():
     box(d, 31, 5, 99, 43, "#0f2b1d")
     try:
         f = ImageFont.truetype("assets/fonts/VT323.ttf", 14)
-        d.text((35, 6), "DEPLOY TO PROD?", font=f, fill=C["lgreen"])
-        d.text((35, 20), "[Y/N] _", font=f, fill=C["lgreen"])
+        d.text((35, 6), "INSERT", font=f, fill=C["lgreen"])
+        d.text((35, 20), "MEDIA _", font=f, fill=C["lgreen"])
     except OSError:
         box(d, 35, 10, 80, 14, C["lgreen"])
     box(d, 58, 46, 72, 52, C["dgrey"])
     box(d, 36, 53, 94, 57, C["lgrey"])                             # keyboard
-    d.ellipse([100, 42, 116, 54], fill=C["dark"])                  # the big red button
-    d.ellipse([102, 41, 114, 51], fill=C["red"])
-    box(d, 105, 43, 109, 45, "#e07a88")
+    box(d, 98, 44, 116, 54, C["dark"])                             # a USB port on the desk, with its little light
+    box(d, 100, 47, 114, 51, C["lgrey"]); box(d, 102, 48, 112, 50, "#16171f")
+    box(d, 104, 40, 108, 43, C["lgreen"])
     return im
 
 
